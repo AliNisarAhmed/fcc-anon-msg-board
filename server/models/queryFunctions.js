@@ -31,7 +31,7 @@ function createReply(text, delete_password) {
 }
 
 function updateThreadWithReply(threadId, replyId) {
-  return Thread.findByIdAndUpdate(threadId, {$push: {replies: replyId} }, {new: true}).exec();
+  return Thread.findByIdAndUpdate(threadId, {$push: {replies: replyId}, bumped_on: Date.now() }, {new: true}).exec();
 }
 
 function reportThread(threadId) {
@@ -42,6 +42,62 @@ function reportReply(replyId) {
   return Reply.findByIdAndUpdate(replyId, { reported: true}, {new: true}).exec();
 }
 
+async function deleteThread(threadId, deletePassword) {
+  const thread = await Thread.findOne({_id: threadId});
+  if (thread.delete_password === deletePassword) {
+    return await thread.remove();
+  } else {
+    return null;
+  }
+}
+
+function removeThreadFromBoard(boardName, threadId) {
+  return Board.findOneAndUpdate({ board: boardName }, { $pull: { threads: threadId } }, {new: true}).exec(); 
+}
+
+async function deleteReply(replyId, deletePassword) {
+  const reply = await Reply.findOne({ _id: replyId });
+  if (reply.delete_password === deletePassword) {
+    return await reply.remove();
+  } else {
+    return null;
+  }
+}
+
+function removeReplyFromThread(threadId, replyId) {
+  return Thread.findByIdAndUpdate(threadId, { $pull: { replies: replyId } }, {new: true}).exec();
+}
+
+async function getThreads(boardName) {
+  let board = await Board.findOne({board: boardName}).populate({
+    path: 'threads',
+    options: {
+      sort: { _id: -1 },  // the first four digits of the Mongoose ID are timestamps, hence we can sort by ID (sorting by date is not working, )
+      limit: 10
+    },
+    populate: {
+      path: 'replies',
+      select: ["text", "created_on"],
+      options: {
+        sort: { _id: -1 },
+        limit: 3
+      }
+    }
+  }).exec();
+  console.log(board);
+  return board.threads;
+}
+
+function getThreadWithAllReplies(threadId) {
+  return Thread.findById(threadId).populate({
+    path: 'replies',
+    select: ['text', 'created_on'],
+    options: {
+      sort: { _id: -1 },
+    }
+  });
+}
+
 module.exports = {
   createThread,
   updateBoardWithThread,
@@ -50,4 +106,10 @@ module.exports = {
   updateThreadWithReply,
   reportThread,
   reportReply,
+  deleteThread,
+  removeThreadFromBoard,
+  deleteReply,
+  removeReplyFromThread,
+  getThreads,
+  getThreadWithAllReplies,
 }

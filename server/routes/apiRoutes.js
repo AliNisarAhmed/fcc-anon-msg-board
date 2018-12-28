@@ -8,6 +8,12 @@ const {
   updateThreadWithReply,
   reportThread,
   reportReply,
+  deleteThread,
+  removeThreadFromBoard,
+  deleteReply,
+  removeReplyFromThread,
+  getThreads,
+  getThreadWithAllReplies,
 } = require('../models/queryFunctions');
 
 
@@ -74,6 +80,76 @@ router.put('/replies/:board', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({error: error.message});    
+  }
+});
+
+// DELETE - delete a thread by giving thread_id and delete_password, latter should match the one in the DB.
+
+router.delete('/threads/:board', async (req, res) => {
+  try {
+    const { thread_id, delete_password } = req.body;
+    const { board: boardName } = req.params;
+    const deletedThread = await deleteThread(thread_id, delete_password);
+    if (deletedThread) {
+      let updatedBoard = await removeThreadFromBoard(boardName, thread_id);
+      res.status(200).send('success');
+    } else {
+      res.status(404).send('incorrect password');
+    }
+  } catch (error) {
+    res.status(500).json({error: error.message});        
+  }
+});
+
+// DELETE - delete a reply by giving thread_id, reply_id and delete_password.
+
+router.delete('/replies/:board', async (req, res) => {
+  try {
+    const { thread_id, reply_id, delete_password } = req.body;
+    const { board: boardName } = req.params;
+    const deletedReply = await deleteReply(reply_id, delete_password);
+    if (deletedReply) {
+      let updatedThread = await removeReplyFromThread(thread_id, reply_id);
+      res.status(200).send('success')
+    } else {
+      res.status(404).send('incorrect password');
+    }
+  } catch (error) {
+    res.status(500).json({error: error.message});            
+  }
+});
+
+// GET - an array of most recent 10 bumped threads, with only the most recent 3 replies.
+// The "reported" and "delete_password" field will not be sent
+
+router.get('/threads/:board', async (req, res) => {
+  try {
+    const { board: boardName } = req.params;
+    const threads = await getThreads(boardName);
+    if (threads) {
+      res.status(200).json(threads);
+    } else {
+      res.status(404).send('bad request');
+    }
+  } catch (error) {
+    res.json({error: error.message});
+  }
+});
+
+// GET - an entire thread with all it's replies, being passed thread_id in query params, hiding reported & delete_password 
+
+router.get('/replies/:board', async (req, res) => {
+  try {
+    const { board: boardName } = req.params;
+    const { thread_id } = req.query;
+    const thread = await getThreadWithAllReplies(thread_id);
+    if (thread) {
+      res.status(200).json(thread);
+    } else {
+      res.status(404).send('bad request');
+    }
+  } catch (error) {
+    res.json({error: error.message});    
   }
 });
 
