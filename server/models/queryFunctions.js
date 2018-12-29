@@ -80,7 +80,6 @@ async function getThreads(boardName) {
       select: ["text", "created_on"],
       options: {
         sort: { _id: -1 },
-        limit: 3
       }
     }
   }).exec();
@@ -98,6 +97,11 @@ function getThreadWithAllReplies(threadId) {
   });
 }
 
+function getAllBoards() {
+  return Board.find({}).sort({_id: -1}).exec();
+}
+
+
 module.exports = {
   createThread,
   updateBoardWithThread,
@@ -112,4 +116,5 @@ module.exports = {
   removeReplyFromThread,
   getThreads,
   getThreadWithAllReplies,
+  getAllBoards,
 }

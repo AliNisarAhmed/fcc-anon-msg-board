@@ -14,8 +14,24 @@ const {
   removeReplyFromThread,
   getThreads,
   getThreadWithAllReplies,
+  getAllBoards,
 } = require('../models/queryFunctions');
 
+// POST - create a discussion board
+
+router.post('/new/:board', async (req, res) => {
+  try {
+    let newBoard = await findOrCreateBoard(req.params.board);
+    console.log(newBoard);
+    if (newBoard) {
+      res.status(200).json(newBoard);
+    } else {
+      res.status(404).send('bad request');
+    }
+  } catch (error) {
+    res.status(500).json({error: error.message});    
+  }
+});
 
 // POST - a thread to a specific "board" by passing form data (text & delete_password)
 
@@ -32,7 +48,7 @@ router.post('/threads/:board', async (req, res) => {
   }
 });
 
-// POST - a reply to a specific "board" by passing form data (text, delete_password & thread_id). 
+// POST - a reply to a specific "thread" by passing form data (text, delete_password & thread_id). 
 // this will also update the bumped_on date of the thread.
 
 router.post('/replies/:board', async (req, res) => {
@@ -149,7 +165,22 @@ router.get('/replies/:board', async (req, res) => {
       res.status(404).send('bad request');
     }
   } catch (error) {
-    res.json({error: error.message});    
+    res.status(500).json({error: error.message});    
+  }
+});
+
+// GET - list of all boards
+
+router.get('/boards', async (req, res) => {
+  try {
+    let boards = await getAllBoards();
+    if (boards) {
+      res.status(200).json(boards);
+    } else {
+      res.status(404).send('bad request');
+    }
+  } catch (error) {
+    res.status(500).json({error: error.message});        
   }
 });
 

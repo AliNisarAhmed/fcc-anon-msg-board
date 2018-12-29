@@ -1,33 +1,18 @@
 import React, { Component } from 'react'
+import { Link, Route } from 'react-router-dom';
+
+import Home from './Home';
+import Board from './Board';
+import Thread from './Thread';
 
 export default class App extends Component {
-  state = {
-    data: []
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData = async () => {
-    let res = await fetch('/api/data');
-    let data = await res.json();
-    console.log(data);
-    this.setState({data});
-  }
   
   render() {
     return (
-      <div>
-        {
-          this.state.data &&
-          this.state.data.map(user => (
-            <div>
-              <p>Name: {user.name}</p>
-              <p>Age: {user.age}</p>
-            </div>
-          ))
-        }
+      <div className="container">
+        <Route exact path="/" component={Home} />
+        <Route exact path="/b/:board" component={Board} />
+        <Route exact path="/b/:board/:thread_id" component={Thread} />
       </div>
     )
   }
