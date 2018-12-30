@@ -15,21 +15,24 @@ const {
   getThreads,
   getThreadWithAllReplies,
   getAllBoards,
+  findBoard,
+  createBoard,
 } = require('../models/queryFunctions');
 
 // POST - create a discussion board
 
 router.post('/new/:board', async (req, res) => {
   try {
-    let newBoard = await findOrCreateBoard(req.params.board);
-    console.log(newBoard);
-    if (newBoard) {
-      res.status(200).json(newBoard);
+    let { board: boardName } = req.params;
+    let foundBoard = await findBoard(boardName.toLowerCase())
+    if (foundBoard) {
+      return res.status(404).send('Board already exists');
     } else {
-      res.status(404).send('bad request');
+      let newBoard = await createBoard(boardName);
+      return res.status(200).json(newBoard);
     }
   } catch (error) {
-    res.status(500).json({error: error.message});    
+    return res.status(500).json({error: error.message});    
   }
 });
 

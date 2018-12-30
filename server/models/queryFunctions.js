@@ -83,7 +83,6 @@ async function getThreads(boardName) {
       }
     }
   }).exec();
-  console.log(board);
   return board.threads;
 }
 
@@ -101,6 +100,13 @@ function getAllBoards() {
   return Board.find({}).sort({_id: -1}).exec();
 }
 
+function findBoard(boardName) {
+  return Board.findOne({board: boardName}).exec();
+}
+
+function createBoard(boardName) {
+  return Board.create({board: boardName});
+}
 
 module.exports = {
   createThread,
@@ -117,4 +123,7 @@ module.exports = {
   getThreads,
   getThreadWithAllReplies,
   getAllBoards,
+  findBoard,
+  createBoard,
 }
+

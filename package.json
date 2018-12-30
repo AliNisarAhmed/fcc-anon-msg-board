@@ -8,7 +8,8 @@
     "start-watch": "nodemon server/index.js",
     "dev": "concurrently --kill-others \"npm run start-watch\" \"npm run build-watch\"",
     "build": "parcel build ./client/index.html",
-    "start": "npm run build && node server/index.js"
+    "start": "npm run build && node server/index.js",
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
@@ -32,7 +33,10 @@
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
-    "@babel/preset-react": "^7.0.0"
+    "@babel/preset-react": "^7.0.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0"
   },
   "babel": {
     "presets": [

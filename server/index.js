@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const connect = require('./connect');
 const apiRoutes = require('./routes/apiRoutes');
@@ -23,9 +24,20 @@ app.get('/', (req, res) => {
 
 // Catchall route
 
-app.get('*', (req, res) => {
-  res.redirect('/');
-});
+// app.get('/*', (req, res) => {
+//   res.redirect('/');
+// });
+
+app.get('/*', function(req, res) {
+  console.log(__dirname);
+  res.sendFile(process.cwd() + '/dist/index.html', function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+})
+
+module.exports = app;
 
 connect('mongodb://localhost:27017/anon-msg-board')
   .then(() => {

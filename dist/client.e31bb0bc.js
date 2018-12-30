@@ -29192,7 +29192,9 @@ function _inherits(subClass, superClass) {
 }
 
 module.exports = _inherits;
-},{"./setPrototypeOf":"../node_modules/@babel/runtime/helpers/setPrototypeOf.js"}],"../node_modules/regenerator-runtime/runtime.js":[function(require,module,exports) {
+},{"./setPrototypeOf":"../node_modules/@babel/runtime/helpers/setPrototypeOf.js"}],"images/Logo.svg":[function(require,module,exports) {
+module.exports = "/Logo.e0456b4e.svg";
+},{}],"../node_modules/regenerator-runtime/runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -31659,7 +31661,36 @@ module.exports.default = axios;
 
 },{"./utils":"../node_modules/axios/lib/utils.js","./helpers/bind":"../node_modules/axios/lib/helpers/bind.js","./core/Axios":"../node_modules/axios/lib/core/Axios.js","./defaults":"../node_modules/axios/lib/defaults.js","./cancel/Cancel":"../node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"../node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"../node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"../node_modules/axios/lib/helpers/spread.js"}],"../node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"../node_modules/axios/lib/axios.js"}],"components/Home.js":[function(require,module,exports) {
+},{"./lib/axios":"../node_modules/axios/lib/axios.js"}],"components/BoardList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = BoardList;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactRouterDom = require("react-router-dom");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function BoardList(_ref) {
+  var board = _ref.board;
+  return _react.default.createElement("div", {
+    className: "col l4 m4 s6"
+  }, _react.default.createElement("div", {
+    className: "card hoverable"
+  }, _react.default.createElement("div", {
+    className: "card-content"
+  }, _react.default.createElement(_reactRouterDom.Link, {
+    to: "/b/".concat(board.board),
+    className: "card-title center-align"
+  }, " ", board.board, " "), _react.default.createElement("p", {
+    className: "center-align"
+  }, "threads: ", board.threads.length))));
+}
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js"}],"components/Home.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31689,7 +31720,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _axios = _interopRequireDefault(require("axios"));
 
-var _reactRouterDom = require("react-router-dom");
+var _BoardList = _interopRequireDefault(require("./BoardList"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -31714,7 +31745,9 @@ function (_Component) {
     _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(Home)).call.apply(_getPrototypeOf2, [this].concat(args)));
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
       boards: [],
-      newBoard: ''
+      newBoard: '',
+      error: '',
+      success: ''
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "fetchBoards",
     /*#__PURE__*/
@@ -31731,13 +31764,12 @@ function (_Component) {
 
             case 2:
               response = _context.sent;
-              console.log(response);
 
               _this.setState({
                 boards: response.data
               });
 
-            case 5:
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -31745,7 +31777,9 @@ function (_Component) {
       }, _callee, this);
     })));
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "handleInputChange", function (e) {
-      _this.setState((0, _defineProperty2.default)({}, e.target.name, e.target.value));
+      var _this$setState;
+
+      _this.setState((_this$setState = {}, (0, _defineProperty2.default)(_this$setState, e.target.name, e.target.value), (0, _defineProperty2.default)(_this$setState, "error", ''), _this$setState));
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "onNewBoardFormSubmit",
     /*#__PURE__*/
@@ -31753,30 +31787,50 @@ function (_Component) {
       var _ref2 = (0, _asyncToGenerator2.default)(
       /*#__PURE__*/
       _regenerator.default.mark(function _callee2(e) {
-        var newBoard;
+        var newBoard, res;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                _context2.prev = 0;
                 e.preventDefault();
                 newBoard = _this.state.newBoard;
-
-                _this.setState({
-                  newBoard: ''
-                });
-
                 _context2.next = 5;
                 return _axios.default.post("api/new/".concat(newBoard));
 
               case 5:
+                res = _context2.sent;
+
+                _this.setState({
+                  newBoard: '',
+                  success: 'Successfully created the board'
+                });
+
+                setTimeout(function () {
+                  _this.setState({
+                    success: ''
+                  });
+                }, 2000);
+
                 _this.fetchBoards();
 
-              case 6:
+                _context2.next = 14;
+                break;
+
+              case 11:
+                _context2.prev = 11;
+                _context2.t0 = _context2["catch"](0);
+
+                _this.setState({
+                  error: 'Error: Either the board already exists or some other fuckup! anyways, try something else'
+                });
+
+              case 14:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee2, this, [[0, 11]]);
       }));
 
       return function (_x) {
@@ -31794,34 +31848,208 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", null, _react.default.createElement("h1", null, "Anonymous Message Board"), _react.default.createElement("h2", null, "A place..."), _react.default.createElement("ul", null, _react.default.createElement("li", null, "Where YOU remain completely anonymous (promise!)"), _react.default.createElement("li", null, "Where WE (NSA) don't track your clicks or your data or store any malware err cookies on your PC"), _react.default.createElement("li", null, "Where you can post any filth or depravity your mind can conceive"), _react.default.createElement("li", null, "Where you can make all sorts of personal attacks or logical fallacies without fear of being downvoted to oblivion coz we dont give a flying f*ck abt Karma"), _react.default.createElement("li", null, "Where you won't be ostracized or kicked out for hurting people's teeny tiny feelings (f*ck people's feelings, and f*ck people)"), _react.default.createElement("li", null, "Where you won't be banned for thought crimes (unlike other \"social\" medias)")), _react.default.createElement("p", null, "So wtf are you waiting for, post your shit in the board of your choice below"), _react.default.createElement("form", {
+      return _react.default.createElement("div", null, _react.default.createElement("h1", null, "Anonymous Message Board"), _react.default.createElement("h3", null, "A place..."), _react.default.createElement("ul", {
+        className: "collection"
+      }, _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where YOU remain completely anonymous (promise!)"), _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where WE (NSA) don't track your clicks or your data (or your location or your whole life), nor do we care about you enough to install any spyware on your PC"), _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where you can post any filth or depravity your mind can conceive"), _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where you can make all sorts of personal attacks or logical fallacies without fear of being downvoted to oblivion coz we dont give a flying f*ck abt Karma (plus, it's hard to implement Karma logic, we are'nt that pro yet!)"), _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where you won't be ostracized or kicked out for hurting people's teeny tiny feelings"), _react.default.createElement("li", {
+        className: "collection-item"
+      }, "Where you won't be banned for thought crimes")), _react.default.createElement("p", null, "So wtf are you waiting for? post your shit in the board of your choice below"), _react.default.createElement("form", {
+        className: "container input-field",
         onSubmit: this.onNewBoardFormSubmit
-      }, _react.default.createElement("label", null, "Create a Board", _react.default.createElement("input", {
+      }, _react.default.createElement("label", null, "Create a Board"), _react.default.createElement("input", {
         type: "text",
         value: this.state.newBoard,
         onChange: this.handleInputChange,
-        name: "newBoard"
-      })), _react.default.createElement("button", {
+        name: "newBoard",
+        required: true
+      }), _react.default.createElement("button", {
         type: "submit",
         className: "btn"
-      }, "Submit")), this.state.boards.length === 0 ? _react.default.createElement("h4", null, "Soooo empty!!! Let's create a board to get started!") : this.state.boards.map(function (board) {
-        return _react.default.createElement("div", {
-          key: board._id
-        }, _react.default.createElement("p", null, "Board: ", _react.default.createElement(_reactRouterDom.Link, {
-          to: "/b/".concat(board.board)
-        }, " ", board.board, " ")), _react.default.createElement("p", null, "threads: ", board.threads.length));
-      }));
+      }, "Submit", _react.default.createElement("i", {
+        className: "material-icons right"
+      }, "send"))), this.state.error && _react.default.createElement("p", {
+        className: "red-text"
+      }, this.state.error), this.state.success && _react.default.createElement("p", {
+        className: "green-text"
+      }, this.state.success), !this.state.error && !this.state.success && _react.default.createElement("br", null), this.state.boards.length === 0 ? _react.default.createElement("h4", null, "Soooo empty!!! Let's create a board to get started!") : _react.default.createElement("div", {
+        className: "row"
+      }, this.state.boards.map(function (board) {
+        return _react.default.createElement(_BoardList.default, {
+          key: board._id,
+          board: board
+        });
+      })));
     }
   }]);
   return Home;
 }(_react.Component);
 
 exports.default = Home;
-},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js"}],"../node_modules/dayjs/dayjs.min.js":[function(require,module,exports) {
+},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","./BoardList":"components/BoardList.js"}],"components/Modal.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = require("react-dom");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var modalRoot = document.getElementById('modal');
+
+var Modal =
+/*#__PURE__*/
+function (_React$Component) {
+  (0, _inherits2.default)(Modal, _React$Component);
+
+  function Modal(props) {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, Modal);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Modal).call(this, props));
+    _this.el = document.createElement('div');
+
+    _this.el.setAttribute('tabindex', 0);
+
+    _this.el.addEventListener('blur', _this.props.toggleModal);
+
+    return _this;
+  }
+
+  (0, _createClass2.default)(Modal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      modalRoot.appendChild(this.el);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      modalRoot.removeChild(this.el);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return (0, _reactDom.createPortal)(this.props.children, this.el);
+    }
+  }]);
+  return Modal;
+}(_react.default.Component);
+
+exports.default = Modal;
+},{"@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/dayjs/dayjs.min.js":[function(require,module,exports) {
 var define;
 !function(t,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):t.dayjs=n()}(this,function(){"use strict";var t="millisecond",n="second",e="minute",r="hour",i="day",s="week",u="month",a="year",o=/^(\d{4})-?(\d{1,2})-?(\d{0,2})(.*?(\d{1,2}):(\d{1,2}):(\d{1,2}))?.?(\d{1,3})?$/,h=/\[.*?\]|Y{2,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g,c={name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_")},d=function(t,n,e){var r=String(t);return!r||r.length>=n?t:""+Array(n+1-r.length).join(e)+t},f={padStart:d,padZoneStr:function(t){var n=Math.abs(t),e=Math.floor(n/60),r=n%60;return(t<=0?"+":"-")+d(e,2,"0")+":"+d(r,2,"0")},monthDiff:function(t,n){var e=12*(n.year()-t.year())+(n.month()-t.month()),r=t.clone().add(e,"months"),i=n-r<0,s=t.clone().add(e+(i?-1:1),"months");return Number(-(e+(n-r)/(i?r-s:s-r)))},absFloor:function(t){return t<0?Math.ceil(t)||0:Math.floor(t)},prettyUnit:function(o){return{M:u,y:a,w:s,d:i,h:r,m:e,s:n,ms:t}[o]||String(o||"").toLowerCase().replace(/s$/,"")},isUndefined:function(t){return void 0===t}},$="en",l={};l[$]=c;var m=function(t){return t instanceof p},y=function(t,n,e){var r;if(!t)return null;if("string"==typeof t)l[t]&&(r=t),n&&(l[t]=n,r=t);else{var i=t.name;l[i]=t,r=i}return e||($=r),r},M=function(t,n){if(m(t))return t.clone();var e=n||{};return e.date=t,new p(e)},S=function(t,n){return M(t,{locale:n.$L})},D=f;D.parseLocale=y,D.isDayjs=m,D.wrapper=S;var p=function(){function c(t){this.parse(t)}var d=c.prototype;return d.parse=function(t){var n,e;this.$d=null===(n=t.date)?new Date(NaN):D.isUndefined(n)?new Date:n instanceof Date?n:"string"==typeof n&&/.*[^Z]$/i.test(n)&&(e=n.match(o))?new Date(e[1],e[2]-1,e[3]||1,e[5]||0,e[6]||0,e[7]||0,e[8]||0):new Date(n),this.init(t)},d.init=function(t){var n=this.$d;this.$y=n.getFullYear(),this.$M=n.getMonth(),this.$D=n.getDate(),this.$W=n.getDay(),this.$H=n.getHours(),this.$m=n.getMinutes(),this.$s=n.getSeconds(),this.$ms=n.getMilliseconds(),this.$L=this.$L||y(t.locale,null,!0)||$},d.$utils=function(){return D},d.isValid=function(){return!("Invalid Date"===this.$d.toString())},d.isSame=function(t,n){var e=M(t);return this.startOf(n)<=e&&e<=this.endOf(n)},d.isAfter=function(t,n){return M(t)<this.startOf(n)},d.isBefore=function(t,n){return this.endOf(n)<M(t)},d.year=function(){return this.$y},d.month=function(){return this.$M},d.day=function(){return this.$W},d.date=function(){return this.$D},d.hour=function(){return this.$H},d.minute=function(){return this.$m},d.second=function(){return this.$s},d.millisecond=function(){return this.$ms},d.unix=function(){return Math.floor(this.valueOf()/1e3)},d.valueOf=function(){return this.$d.getTime()},d.startOf=function(t,o){var h=this,c=!!D.isUndefined(o)||o,d=function(t,n){var e=S(new Date(h.$y,n,t),h);return c?e:e.endOf(i)},f=function(t,n){return S(h.toDate()[t].apply(h.toDate(),(c?[0,0,0,0]:[23,59,59,999]).slice(n)),h)};switch(D.prettyUnit(t)){case a:return c?d(1,0):d(31,11);case u:return c?d(1,this.$M):d(0,this.$M+1);case s:return d(c?this.$D-this.$W:this.$D+(6-this.$W),this.$M);case i:case"date":return f("setHours",0);case r:return f("setMinutes",1);case e:return f("setSeconds",2);case n:return f("setMilliseconds",3);default:return this.clone()}},d.endOf=function(t){return this.startOf(t,!1)},d.$set=function(s,o){var h,c=D.prettyUnit(s),d=(h={},h[i]="setDate",h.date="setDate",h[u]="setMonth",h[a]="setFullYear",h[r]="setHours",h[e]="setMinutes",h[n]="setSeconds",h[t]="setMilliseconds",h)[c],f=c===i?this.$D+(o-this.$W):o;return this.$d[d]&&this.$d[d](f),this.init(),this},d.set=function(t,n){return this.clone().$set(t,n)},d.add=function(t,o){var h,c=this;t=Number(t);var d=D.prettyUnit(o),f=function(n,e){var r=c.set("date",1).set(n,e+t);return r.set("date",Math.min(c.$D,r.daysInMonth()))},$=function(n){var e=new Date(c.$d);return e.setDate(e.getDate()+n*t),S(e,c)};if(d===u)return f(u,this.$M);if(d===a)return f(a,this.$y);if(d===i)return $(1);if(d===s)return $(7);var l=(h={},h[e]=6e4,h[r]=36e5,h[n]=1e3,h)[d]||1,m=this.valueOf()+t*l;return S(m,this)},d.subtract=function(t,n){return this.add(-1*t,n)},d.format=function(t){var n=this,e=t||"YYYY-MM-DDTHH:mm:ssZ",r=D.padZoneStr(this.$d.getTimezoneOffset()),i=this.$locale(),s=i.weekdays,u=i.months,a=function(t,n,e,r){return t&&t[n]||e[n].substr(0,r)},o=function(t){return 0===n.$H?12:D.padStart(n.$H<13?n.$H:n.$H-12,"hh"===t?2:1,"0")};return e.replace(h,function(t){return t.indexOf("[")>-1?t.replace(/\[|\]/g,""):{YY:String(n.$y).slice(-2),YYYY:String(n.$y),M:String(n.$M+1),MM:D.padStart(n.$M+1,2,"0"),MMM:a(i.monthsShort,n.$M,u,3),MMMM:u[n.$M],D:String(n.$D),DD:D.padStart(n.$D,2,"0"),d:String(n.$W),dd:a(i.weekdaysMin,n.$W,s,2),ddd:a(i.weekdaysShort,n.$W,s,3),dddd:s[n.$W],H:String(n.$H),HH:D.padStart(n.$H,2,"0"),h:o(t),hh:o(t),a:n.$H<12?"am":"pm",A:n.$H<12?"AM":"PM",m:String(n.$m),mm:D.padStart(n.$m,2,"0"),s:String(n.$s),ss:D.padStart(n.$s,2,"0"),SSS:D.padStart(n.$ms,3,"0"),Z:r}[t]||r.replace(":","")})},d.diff=function(t,o,h){var c,d=D.prettyUnit(o),f=M(t),$=this-f,l=D.monthDiff(this,f);return l=(c={},c[a]=l/12,c[u]=l,c.quarter=l/3,c[s]=$/6048e5,c[i]=$/864e5,c[r]=$/36e5,c[e]=$/6e4,c[n]=$/1e3,c)[d]||$,h?l:D.absFloor(l)},d.daysInMonth=function(){return this.endOf(u).$D},d.$locale=function(){return l[this.$L]},d.locale=function(t,n){var e=this.clone();return e.$L=y(t,n,!0),e},d.clone=function(){return S(this.toDate(),this)},d.toDate=function(){return new Date(this.$d)},d.toArray=function(){return[this.$y,this.$M,this.$D,this.$H,this.$m,this.$s,this.$ms]},d.toJSON=function(){return this.toISOString()},d.toISOString=function(){return this.$d.toISOString()},d.toObject=function(){return{years:this.$y,months:this.$M,date:this.$D,hours:this.$H,minutes:this.$m,seconds:this.$s,milliseconds:this.$ms}},d.toString=function(){return this.$d.toUTCString()},c}();return M.extend=function(t,n){return t(n,p,M),M},M.locale=y,M.isDayjs=m,M.unix=function(t){return M(1e3*t)},M.en=l[$],M});
 
-},{}],"components/Board.js":[function(require,module,exports) {
+},{}],"components/ThreadList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ThreadList;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactRouterDom = require("react-router-dom");
+
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ThreadList(_ref) {
+  var thread = _ref.thread,
+      url = _ref.url,
+      toggleModal = _ref.toggleModal;
+  return _react.default.createElement("div", {
+    className: "card horizontal col s12"
+  }, _react.default.createElement("div", {
+    className: "card-stacked"
+  }, _react.default.createElement("div", {
+    className: "card-content"
+  }, _react.default.createElement("h3", null, thread.text), _react.default.createElement("p", null, thread.replies.length, " Replies Total (", thread.replies.length > 3 ? thread.replies.length - 3 : 0, " hidden)"), thread.replies.length > 0 && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("p", {
+    className: "grey-text"
+  }, "latest comments..."), _react.default.createElement("ul", {
+    className: "collection"
+  }, _react.default.createElement("li", {
+    className: "collection-item truncate"
+  }, thread.replies[0].text), thread.replies[1] && _react.default.createElement("li", {
+    className: "collection-item truncate"
+  }, thread.replies[1].text), thread.replies[2] && _react.default.createElement("li", {
+    className: "collection-item truncate"
+  }, thread.replies[2].text))), _react.default.createElement("p", {
+    className: "grey-text"
+  }, "created on: ", (0, _dayjs.default)(thread.created_on).format('DD MMM YYYY, H:m:sA')), _react.default.createElement("p", {
+    className: "grey-text"
+  }, "last updated on: ", (0, _dayjs.default)(thread.bumped_on).format('DD MMM YYYY, H:m:sA'))), _react.default.createElement("div", {
+    className: "card-action"
+  }, _react.default.createElement(_reactRouterDom.Link, {
+    className: "btn",
+    to: "".concat(url, "/").concat(thread._id)
+  }, "See Full Thread", _react.default.createElement("i", {
+    className: "material-icons right"
+  }, "open_in_browser")), _react.default.createElement("button", {
+    className: "btn",
+    onClick: toggleModal,
+    name: thread._id
+  }, "Delete Thread", _react.default.createElement("i", {
+    className: "material-icons right"
+  }, "delete_forever")))));
+}
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","dayjs":"../node_modules/dayjs/dayjs.min.js"}],"components/ModalChild.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = ModalChild;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function ModalChild(_ref) {
+  var value = _ref.value,
+      handleInputChange = _ref.handleInputChange,
+      deleteFunc = _ref.deleteFunc,
+      toggleModal = _ref.toggleModal;
+  return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("p", null, "Enter the secret password"), _react.default.createElement("input", {
+    type: "text",
+    value: value,
+    name: "delete_password",
+    onChange: handleInputChange
+  }), _react.default.createElement("button", {
+    onClick: deleteFunc,
+    type: "submit",
+    className: "btn"
+  }, "Submit"), _react.default.createElement("button", {
+    onClick: toggleModal,
+    className: "btn"
+  }, "Cancel"));
+}
+},{"react":"../node_modules/react/index.js"}],"components/Board.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31851,9 +32079,11 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _axios = _interopRequireDefault(require("axios"));
 
-var _reactRouterDom = require("react-router-dom");
+var _Modal = _interopRequireDefault(require("./Modal"));
 
-var _dayjs = _interopRequireDefault(require("dayjs"));
+var _ThreadList = _interopRequireDefault(require("./ThreadList"));
+
+var _ModalChild = _interopRequireDefault(require("./ModalChild"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -31879,7 +32109,12 @@ function (_Component) {
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
       threads: [],
       newThread: '',
-      secretPassword: ''
+      secretPassword: '',
+      toggleModal: '',
+      toggledThread: '',
+      delete_password: '',
+      error: '',
+      success: ''
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "fetchThreads",
     /*#__PURE__*/
@@ -31940,12 +32175,10 @@ function (_Component) {
 
               case 5:
                 res = _context2.sent;
-                console.log(newThread, secretPassword);
-                console.log(res);
 
                 _this.fetchThreads();
 
-              case 9:
+              case 7:
               case "end":
                 return _context2.stop();
             }
@@ -31957,6 +32190,89 @@ function (_Component) {
         return _ref2.apply(this, arguments);
       };
     }());
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "toggleModal", function (e) {
+      if (_this.state.toggledThread) {
+        _this.setState({
+          toggledThread: '',
+          delete_password: ''
+        });
+      } else {
+        _this.setState({
+          toggledThread: e.target.name
+        });
+      }
+
+      console.log('modal toggled');
+
+      _this.setState(function (state) {
+        return {
+          showModal: !state.showModal
+        };
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "deleteThread",
+    /*#__PURE__*/
+    (0, _asyncToGenerator2.default)(
+    /*#__PURE__*/
+    _regenerator.default.mark(function _callee3() {
+      var url;
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              url = "/api/threads/".concat(_this.props.match.params.board);
+              _context3.next = 4;
+              return (0, _axios.default)({
+                method: 'delete',
+                url: url,
+                data: {
+                  thread_id: _this.state.toggledThread,
+                  delete_password: _this.state.delete_password
+                }
+              });
+
+            case 4:
+              _this.setState({
+                success: 'Successfully deleted'
+              });
+
+              setTimeout(function () {
+                return _this.setState({
+                  success: ''
+                });
+              }, 2000);
+
+              _this.toggleModal();
+
+              _this.fetchThreads();
+
+              _context3.next = 15;
+              break;
+
+            case 10:
+              _context3.prev = 10;
+              _context3.t0 = _context3["catch"](0);
+
+              _this.setState({
+                error: 'Password does not match'
+              });
+
+              _this.toggleModal();
+
+              setTimeout(function () {
+                return _this.setState({
+                  error: null
+                });
+              }, 2000);
+
+            case 15:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, this, [[0, 10]]);
+    })));
     return _this;
   }
 
@@ -31970,38 +32286,64 @@ function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      return _react.default.createElement("div", null, _react.default.createElement("p", null, "Submit a new thread"), _react.default.createElement("form", {
+      return _react.default.createElement("div", null, _react.default.createElement("h5", null, "You are in... "), _react.default.createElement("span", null, "/b/"), _react.default.createElement("h2", {
+        className: "boardInitials"
+      }, this.props.match.params.board), _react.default.createElement("form", {
+        className: "col container",
         onSubmit: this.handleFormSubmit
-      }, _react.default.createElement("textarea", {
+      }, _react.default.createElement("p", null, "Create a new Thread?"), _react.default.createElement("div", {
+        className: "input-field"
+      }, _react.default.createElement("label", {
+        htmlFor: "newThread"
+      }, "Enter Thread Text"), _react.default.createElement("textarea", {
         value: this.state.newThread,
+        id: "newThread",
         name: "newThread",
         onChange: this.handleInputChange,
-        placeholder: "Thread text...",
-        rows: "4",
-        cols: "50"
-      }), _react.default.createElement("br", null), _react.default.createElement("input", {
+        className: "materialize-textarea"
+      })), _react.default.createElement("div", {
+        className: "input-field"
+      }, _react.default.createElement("label", {
+        htmlFor: "secretPassword"
+      }, "Secret Password"), _react.default.createElement("input", {
         type: "text",
-        placeholder: "Secret password",
+        id: "secretPassword",
         name: "secretPassword",
         onChange: this.handleInputChange,
         value: this.state.secretPassword
-      }), _react.default.createElement("button", {
+      })), _react.default.createElement("button", {
         type: "submit",
         className: "btn"
-      }, "Submit")), this.state.threads.length === 0 ? _react.default.createElement("h4", null, "No Threads, create a thread") : this.state.threads.map(function (thread) {
-        return _react.default.createElement("div", {
-          key: thread._id
-        }, _react.default.createElement("h3", null, thread.text), _react.default.createElement("p", null, "created on: ", (0, _dayjs.default)(thread.created_on).format('DD MMM YYYY, H:m:sA')), _react.default.createElement("p", null, "Total replies: ", thread.replies.length), _react.default.createElement("p", null, "last updated on: ", (0, _dayjs.default)(thread.bumped_on).format('DD MMM YYYY, H:m:sA')), _react.default.createElement(_reactRouterDom.Link, {
-          to: "".concat(_this2.props.match.url, "/").concat(thread._id)
-        }, "See Full Thread "), _react.default.createElement("hr", null));
-      }));
+      }, "Submit", _react.default.createElement("i", {
+        className: "material-icons right"
+      }, "send"))), _react.default.createElement("br", null), this.state.error && _react.default.createElement("p", {
+        className: "red-text"
+      }, this.state.error), this.state.success && _react.default.createElement("p", {
+        className: "green-text"
+      }, this.state.success), this.state.threads.length && _react.default.createElement("h4", null, "Latest Threads..."), _react.default.createElement("div", {
+        className: "row"
+      }, this.state.threads.length === 0 ? _react.default.createElement("h4", null, "No Threads, create a thread") : this.state.threads.map(function (thread) {
+        return _react.default.createElement(_ThreadList.default, {
+          key: thread._id,
+          url: _this2.props.match.url,
+          thread: thread,
+          toggleModal: _this2.toggleModal
+        });
+      })), this.state.showModal ? _react.default.createElement(_Modal.default, {
+        toggleModal: this.toggleModal
+      }, _react.default.createElement(_ModalChild.default, {
+        value: this.state.delete_password,
+        handleInputChange: this.handleInputChange,
+        deleteFunc: this.deleteThread,
+        toggleModal: this.toggleModal
+      })) : null);
     }
   }]);
   return Board;
 }(_react.Component);
 
 exports.default = Board;
-},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","dayjs":"../node_modules/dayjs/dayjs.min.js"}],"components/Thread.js":[function(require,module,exports) {
+},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","./Modal":"components/Modal.js","./ThreadList":"components/ThreadList.js","./ModalChild":"components/ModalChild.js"}],"components/Thread.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32031,6 +32373,12 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
+var _Modal = _interopRequireDefault(require("./Modal"));
+
+var _ModalChild = _interopRequireDefault(require("./ModalChild"));
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -32053,7 +32401,14 @@ function (_Component) {
 
     _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(Thread)).call.apply(_getPrototypeOf2, [this].concat(args)));
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "state", {
-      thread: null
+      thread: null,
+      newReply: '',
+      secretPassword: '',
+      showModal: false,
+      toggledReply: '',
+      error: '',
+      delete_password: '',
+      success: ''
     });
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "fetchThread",
     /*#__PURE__*/
@@ -32083,6 +32438,141 @@ function (_Component) {
         }
       }, _callee, this);
     })));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "handleInputChange", function (e) {
+      _this.setState((0, _defineProperty2.default)({}, e.target.name, e.target.value));
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "handleFormSubmit",
+    /*#__PURE__*/
+    function () {
+      var _ref2 = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee2(e) {
+        var _this$state, newReply, secretPassword, url, res;
+
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                e.preventDefault();
+                _this$state = _this.state, newReply = _this$state.newReply, secretPassword = _this$state.secretPassword;
+
+                _this.setState({
+                  newReply: '',
+                  secretPassword: ''
+                });
+
+                url = "/api/replies/".concat(_this.props.match.params.board);
+                console.log(url);
+                _context2.next = 7;
+                return (0, _axios.default)({
+                  method: 'post',
+                  url: url,
+                  data: {
+                    text: newReply,
+                    delete_password: secretPassword,
+                    thread_id: _this.props.match.params.thread_id
+                  }
+                });
+
+              case 7:
+                res = _context2.sent;
+
+                _this.fetchThread();
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      return function (_x) {
+        return _ref2.apply(this, arguments);
+      };
+    }());
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "toggleModal", function (e) {
+      if (_this.state.toggledReply) {
+        _this.setState({
+          toggledReply: '',
+          delete_password: ''
+        });
+      } else {
+        _this.setState({
+          toggledReply: e.target.name
+        });
+      }
+
+      console.log('modal toggled');
+
+      _this.setState(function (state) {
+        return {
+          showModal: !state.showModal
+        };
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "deleteReply",
+    /*#__PURE__*/
+    (0, _asyncToGenerator2.default)(
+    /*#__PURE__*/
+    _regenerator.default.mark(function _callee3() {
+      var url;
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              url = "/api/replies/".concat(_this.props.match.params.board);
+              _context3.next = 4;
+              return (0, _axios.default)({
+                method: 'delete',
+                url: url,
+                data: {
+                  thread_id: _this.props.match.params.thread_id,
+                  reply_id: _this.state.toggledReply,
+                  delete_password: _this.state.delete_password
+                }
+              });
+
+            case 4:
+              _this.setState({
+                success: 'Successfully deleted'
+              });
+
+              setTimeout(function () {
+                return _this.setState({
+                  success: ''
+                });
+              }, 1500);
+
+              _this.toggleModal();
+
+              _this.fetchThread();
+
+              _context3.next = 14;
+              break;
+
+            case 10:
+              _context3.prev = 10;
+              _context3.t0 = _context3["catch"](0);
+
+              _this.setState({
+                error: 'Error Deleting Reply'
+              });
+
+              setTimeout(function () {
+                return _this.setState({
+                  error: null
+                });
+              }, 1500);
+
+            case 14:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, this, [[0, 10]]);
+    })));
     return _this;
   }
 
@@ -32094,16 +32584,65 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", null, _react.default.createElement("h1", null, this.state.thread && this.state.thread.text), this.state.thread && this.state.thread.replies.map(function (reply) {
-        return _react.default.createElement("div", null, _react.default.createElement("p", null, "Text: ", reply.text), _react.default.createElement("p", null, "Dated: ", reply.created_on));
-      }));
+      var _React$createElement,
+          _this2 = this;
+
+      return _react.default.createElement("div", null, _react.default.createElement("h1", null, this.state.thread && this.state.thread.text), _react.default.createElement("h4", null, "Post a reply"), _react.default.createElement("form", {
+        className: "container",
+        onSubmit: this.handleFormSubmit
+      }, _react.default.createElement("input", (_React$createElement = {
+        type: "text",
+        name: "newReply",
+        value: this.state.newReply
+      }, (0, _defineProperty2.default)(_React$createElement, "name", "newReply"), (0, _defineProperty2.default)(_React$createElement, "onChange", this.handleInputChange), (0, _defineProperty2.default)(_React$createElement, "placeholder", "Reply Text..."), _React$createElement)), _react.default.createElement("input", {
+        type: "text",
+        name: "secretPassword",
+        value: this.state.secretPassword,
+        onChange: this.handleInputChange,
+        placeholder: "Secret Password"
+      }), _react.default.createElement("button", {
+        className: "btn",
+        type: "submit"
+      }, "Submit", _react.default.createElement("i", {
+        className: "material-icons right"
+      }, "send"))), this.state.error && _react.default.createElement("p", {
+        className: "red-text"
+      }, this.state.error), this.state.success && _react.default.createElement("p", {
+        className: "green-text"
+      }, this.state.success), this.state.thread && this.state.thread.replies.length > 0 ? this.state.thread.replies.map(function (reply) {
+        return _react.default.createElement("div", {
+          className: "card",
+          key: reply._id
+        }, _react.default.createElement("div", {
+          className: "card-content"
+        }, _react.default.createElement("span", {
+          className: "card-title"
+        }, reply.text), _react.default.createElement("p", {
+          className: "grey-text"
+        }, "Dated: ", (0, _dayjs.default)(reply.created_on).format('DD MMM YYYY, H:m:sA'))), _react.default.createElement("div", {
+          className: "card-action"
+        }, _react.default.createElement("button", {
+          className: "btn",
+          onClick: _this2.toggleModal,
+          name: reply._id
+        }, "Delete", _react.default.createElement("i", {
+          className: "material-icons right"
+        }, "delete"))));
+      }) : _react.default.createElement("p", null, "No replies yet..."), this.state.showModal ? _react.default.createElement(_Modal.default, {
+        toggleModal: this.toggleModal
+      }, _react.default.createElement(_ModalChild.default, {
+        value: this.state.delete_password,
+        deleteFunc: this.deleteReply,
+        handleInputChange: this.handleInputChange,
+        toggleModal: this.toggleModal
+      })) : null);
     }
   }]);
   return Thread;
 }(_react.Component);
 
 exports.default = Thread;
-},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js"}],"components/App.js":[function(require,module,exports) {
+},{"@babel/runtime/regenerator":"../node_modules/@babel/runtime/regenerator/index.js","@babel/runtime/helpers/asyncToGenerator":"../node_modules/@babel/runtime/helpers/asyncToGenerator.js","@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","@babel/runtime/helpers/assertThisInitialized":"../node_modules/@babel/runtime/helpers/assertThisInitialized.js","@babel/runtime/helpers/defineProperty":"../node_modules/@babel/runtime/helpers/defineProperty.js","react":"../node_modules/react/index.js","axios":"../node_modules/axios/index.js","dayjs":"../node_modules/dayjs/dayjs.min.js","./Modal":"components/Modal.js","./ModalChild":"components/ModalChild.js"}],"components/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32124,6 +32663,8 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 var _react = _interopRequireWildcard(require("react"));
 
 var _reactRouterDom = require("react-router-dom");
+
+var _Logo = _interopRequireDefault(require("../images/Logo.svg"));
 
 var _Home = _interopRequireDefault(require("./Home"));
 
@@ -32148,9 +32689,22 @@ function (_Component) {
   (0, _createClass2.default)(App, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", {
+      return _react.default.createElement("div", null, _react.default.createElement("nav", {
+        className: "teal"
+      }, _react.default.createElement("div", {
+        className: "nav-wrapper"
+      }, _react.default.createElement(_reactRouterDom.Link, {
+        className: "brand-logo center",
+        to: "/"
+      }, _react.default.createElement("img", {
+        src: _Logo.default,
+        className: "circle",
+        width: "100",
+        height: "60",
+        alt: "Logo"
+      })))), _react.default.createElement("div", {
         className: "container"
-      }, _react.default.createElement(_reactRouterDom.Route, {
+      }, _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
         exact: true,
         path: "/",
         component: _Home.default
@@ -32162,14 +32716,14 @@ function (_Component) {
         exact: true,
         path: "/b/:board/:thread_id",
         component: _Thread.default
-      }));
+      }))));
     }
   }]);
   return App;
 }(_react.Component);
 
 exports.default = App;
-},{"@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","./Home":"components/Home.js","./Board":"components/Board.js","./Thread":"components/Thread.js"}],"index.js":[function(require,module,exports) {
+},{"@babel/runtime/helpers/classCallCheck":"../node_modules/@babel/runtime/helpers/classCallCheck.js","@babel/runtime/helpers/createClass":"../node_modules/@babel/runtime/helpers/createClass.js","@babel/runtime/helpers/possibleConstructorReturn":"../node_modules/@babel/runtime/helpers/possibleConstructorReturn.js","@babel/runtime/helpers/getPrototypeOf":"../node_modules/@babel/runtime/helpers/getPrototypeOf.js","@babel/runtime/helpers/inherits":"../node_modules/@babel/runtime/helpers/inherits.js","react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","../images/Logo.svg":"images/Logo.svg","./Home":"components/Home.js","./Board":"components/Board.js","./Thread":"components/Thread.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -32212,7 +32766,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35139" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "42307" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
