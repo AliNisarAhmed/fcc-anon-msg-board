@@ -1,4 +1,8 @@
-#modal {
+body {
+  font-family: Roboto;
+}
+
+.customModal {
   background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
   left: 0;
@@ -11,22 +15,23 @@
   align-items: center;
 }
 
-#modal:empty {
+.customModal:empty {
   display: none;
 }
 
-#modal > div {
+.customModal > div {
   background-color: white;
-  max-width: 500px;
+  max-width: 800px;
   padding: 15px;
   border-radius: 5px;
   text-align: center;
+  width: 80%;
 }
 
-#modal .buttons button {
+/* .customeModal .buttons button {
   display: inline-block;
   margin-right: 15px;
-}
+} */
 
 .btn {
   margin: 5px 10px;
@@ -35,4 +40,63 @@
 .boardInitials {
   display: inline-block;
   margin-top: 10px;
+}
+
+.buttonContainer {
+  position: relative;
+  padding-bottom: 90px;
+}
+
+button.fixed-btn, .btn-floating {
+  position: fixed;
+  bottom: 40px;
+  right: 60px;
+  z-index: 10;
+}
+
+.alertModal {
+  position: fixed;
+  background-color: #f44336;
+  color: white;
+  left: 46px;
+  bottom: 46px;
+  height: 50px;
+  border-radius: 5px;
+  z-index: 10;
+  animation: alertBox 2s;
+  transition: all .2s;
+}
+
+.alertModal:empty {
+  display: none;
+}
+
+.alertModal > * {
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 0;
+  min-width: 100px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alertModal > div {
+}
+
+@keyframes alertBox {
+  0% {
+    bottom: -50px;
+  }
+  18% {
+    bottom: 46px;
+  }
+  82% {
+    bottom: 46px;
+  }
+  100% {
+    bottom: -50px;    
+  }
 }

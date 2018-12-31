@@ -5,6 +5,7 @@ import logo from '../images/Logo.svg';
 import Home from './Home';
 import Board from './Board';
 import Thread from './Thread';
+import FourOFour from './FourOFour';
 
 export default class App extends Component {
   
@@ -20,7 +21,8 @@ export default class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/b/:board" component={Board} />
-            <Route exact path="/b/:board/:thread_id" component={Thread} />  
+            <Route exact path="/b/:board/:thread_id" component={Thread} />
+            <Route component={FourOFour} /> 
           </Switch>
         </div>
       </div>

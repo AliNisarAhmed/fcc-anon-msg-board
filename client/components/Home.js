@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
+
 import BoardList from './BoardList';
+import Modal from './Modal';
+import NewBoardForm from './NewBoardForm';
+import NewItemButton from './NewItemButton';
+import AlertModal from './AlertModal';
 
 export default class Home extends Component {
   state = {
@@ -8,9 +13,11 @@ export default class Home extends Component {
     newBoard: '',
     error: '',
     success: '',
+    showModal: false,
   }
 
   componentDidMount() {
+    M.AutoInit();
     this.fetchBoards();
   }
 
@@ -31,19 +38,33 @@ export default class Home extends Component {
       e.preventDefault();
       let { newBoard } = this.state;
       let res = await Axios.post(`api/new/${newBoard}`);
-      this.setState({newBoard: '', success: 'Successfully created the board'});
+      this.setState({newBoard: '', success: 'Success! Board Created'});
       setTimeout(() => {
         this.setState({success: ''});
       }, 2000);
+      this.toggleModal();
       this.fetchBoards();
     } catch (error) {
-      this.setState({error: 'Error: Either the board already exists or some other fuckup! anyways, try something else'});
+      this.toggleModal();
+      this.setState({error: "Error creating Board"});
+      setTimeout(() => this.setState({error: false}), 2000);
     }
+  }
+
+  toggleModal = (e) => {
+    // if (this.state.toggledThread) {
+    //   this.setState({toggledThread: '', delete_password: ''});
+    // } else {
+    //   this.setState({toggledThread: e.target.name});
+    // }
+    // console.log('modal toggled');
+    this.setState((state) => ({showModal: !state.showModal}));
   }
 
   render() {
     return (
-      <div>
+      <div className="buttonContainer">
+        <NewItemButton toggleModal={this.toggleModal} tooltipText="Create a New Board" />
         <h1>Anonymous Message Board</h1>
         <h3>A place...</h3>
         <ul className="collection">
@@ -54,15 +75,7 @@ export default class Home extends Component {
           <li className="collection-item">Where you won't be ostracized or kicked out for hurting people's teeny tiny feelings</li>
           <li className="collection-item">Where you won't be banned for thought crimes</li>
         </ul>
-        <p>So wtf are you waiting for? post your shit in the board of your choice below</p>
-        <form className="container input-field" onSubmit={this.onNewBoardFormSubmit}>
-          <label>Create a Board</label>
-          <input type="text" value={this.state.newBoard} onChange={this.handleInputChange} name="newBoard" required/>
-          <button type="submit" className="btn">Submit<i className="material-icons right">send</i></button>
-        </form>
-        { this.state.error && <p className="red-text">{this.state.error}</p> }  
-        { this.state.success && <p className="green-text">{this.state.success}</p> } 
-        { !this.state.error && !this.state.success && <br />} 
+        <h5>So what are you waiting for? post away in the board of your choice below</h5> 
         {
           this.state.boards.length === 0 ?
           <h4>Soooo empty!!! Let's create a board to get started!</h4> :
@@ -71,6 +84,32 @@ export default class Home extends Component {
               this.state.boards.map(board => <BoardList key={board._id} board={board} />)
             }
           </div>
+        }
+        {
+          this.state.showModal ? (
+            <Modal>
+              <NewBoardForm 
+              onNewBoardFormSubmit={this.onNewBoardFormSubmit} 
+              newBoard={this.state.newBoard} 
+              handleInputChange={this.handleInputChange}
+              toggleModal={this.toggleModal}
+              />
+            </Modal>
+          ) : null
+        }
+        {
+          this.state.error ? (
+            <AlertModal classProp="red">
+              {this.state.error}
+            </AlertModal>
+          ) : null
+        }
+        {
+          this.state.success ? (
+            <AlertModal classProp="green">
+              {this.state.success}
+            </AlertModal>
+          ): null
         }
       </div>
     )

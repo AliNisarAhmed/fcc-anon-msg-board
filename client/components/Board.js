@@ -1,22 +1,28 @@
 import React, { Component } from 'react'
 import Axios from 'axios';
+
 import Modal from './Modal';
 import ThreadList from './ThreadList';
 import ModalChild from './ModalChild';
+import NewItemForm from './NewItemForm';
+import NewItemButton from './NewItemButton';
+import AlertBox from './AlertBox';
 
 export default class Board extends Component {
   state = {
     threads: [],
     newThread: '',
     secretPassword: '',
-    toggleModal: '',
+    showModal: false,
     toggledThread: '',
     delete_password: '',
     error: '',
     success: '',
+    showNewThreadModal: false
   }
 
   componentDidMount() {
+    M.AutoInit();
     this.fetchThreads();
   }
 
@@ -34,13 +40,21 @@ export default class Board extends Component {
 
   handleFormSubmit = async (e) => {
     e.preventDefault();
-    let { newThread, secretPassword } = this.state;
-    this.setState({newThread: '', secretPassword: ''});
-    let res = await Axios.post(`/api/threads/${this.props.match.params.board}`, {
-      text: newThread,
-      delete_password: secretPassword
-    });
-    this.fetchThreads();
+    try {
+      let { newThread, secretPassword } = this.state;
+      this.setState({newThread: '', secretPassword: ''});
+      let res = await Axios.post(`/api/threads/${this.props.match.params.board}`, {
+        text: newThread,
+        delete_password: secretPassword
+      });
+      this.toggleNewThreadModal();
+      this.fetchThreads();
+      this.setState({success: 'Success! Thread Created'});
+      setTimeout(() => this.setState({success: ''}), 2000);
+    } catch (error) {
+      this.setState({error: 'Error! Failed to create Thread'});
+      setTimeout(() => this.setState({error: ''}), 2000);
+    }
   }
 
   toggleModal = (e) => {
@@ -51,6 +65,10 @@ export default class Board extends Component {
     }
     console.log('modal toggled');
     this.setState((state) => ({showModal: !state.showModal}));
+  }
+
+  toggleNewThreadModal = () => {
+    this.setState((state) => ({showNewThreadModal: !state.showNewThreadModal}));
   }
 
   deleteThread = async () => {
@@ -78,29 +96,20 @@ export default class Board extends Component {
 
   render() {
     return (
-      <div>
+      <div className="buttonContainer">
+        <NewItemButton toggleModal={this.toggleNewThreadModal} tooltipText="Create a New Thread" />
         <h5>You are in... </h5><span>/b/</span><h2  className="boardInitials">{this.props.match.params.board}</h2>
-        <form className="col container" onSubmit={this.handleFormSubmit}>
-          <p>Create a new Thread?</p>
-          <div className="input-field">
-            <label htmlFor="newThread">Enter Thread Text</label>
-            <textarea value={this.state.newThread} id="newThread" name="newThread" onChange={this.handleInputChange} className="materialize-textarea"></textarea>
-          </div>
-          <div className="input-field">
-            <label htmlFor="secretPassword">Secret Password</label>
-            <input type="text" id="secretPassword" name="secretPassword" onChange={this.handleInputChange} value={this.state.secretPassword} />
-            </div>     
-            <button type="submit" className="btn">Submit<i className="material-icons right">send</i></button>
-        </form>
-        <br />
-        {this.state.error && <p className="red-text">{this.state.error}</p>}
-        {this.state.success && <p className="green-text">{this.state.success}</p>}
-        { this.state.threads.length && <h4>Latest Threads...</h4>}
         <div className="row">
           {
             this.state.threads.length === 0 ?
-            <h4>No Threads, create a thread</h4> :
-            this.state.threads.map(thread => <ThreadList key={thread._id} url={this.props.match.url} thread={thread} toggleModal={this.toggleModal} />)
+            <h5>No Threads, create a thread...</h5> : (
+              <React.Fragment>
+                <h3>Latest Threads...</h3>
+                {
+                  this.state.threads.map(thread => <ThreadList key={thread._id} url={this.props.match.url} thread={thread} toggleModal={this.toggleModal} />)
+                }
+              </React.Fragment>
+            )
           }
         </div>
         {
@@ -115,6 +124,21 @@ export default class Board extends Component {
             </Modal>
           ) : null
         }
+        {
+          this.state.showNewThreadModal ? (
+            <Modal>
+              <NewItemForm 
+                handleFormSubmit={this.handleFormSubmit}
+                newItem={this.state.newThread} 
+                handleInputChange={this.handleInputChange} 
+                secretPassword={this.state.secretPassword}
+                toggleNewItemModal={this.toggleNewThreadModal}
+                name="newThread"
+              />
+            </Modal>
+          ) : null
+        }
+        <AlertBox error={this.state.error} success={this.state.success} />
       </div>
     )
   }
