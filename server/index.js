@@ -1,6 +1,6 @@
 const express = require('express');
+require('dotenv').config();
 const bodyParser = require('body-parser');
-const path = require('path');
 
 const connect = require('./connect');
 const apiRoutes = require('./routes/apiRoutes');
@@ -35,11 +35,14 @@ app.get('/*', function(req, res) {
       res.status(500).send(err)
     }
   })
-})
+});
+
+let port = process.env.PORT || 3000;
 
 module.exports = app;
 
-connect('mongodb://localhost:27017/anon-msg-board')
+
+connect(process.env.MONGO_URI)
   .then(() => {
-    app.listen(3000, () => console.log('Listening on port 3000!'));
+    app.listen(port, () => console.log('Listening on port ' + port));
   })
